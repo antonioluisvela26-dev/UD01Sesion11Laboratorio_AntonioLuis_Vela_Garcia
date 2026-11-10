@@ -4,7 +4,7 @@ echo "=== 1. Creando estructura de directorios en HDFS ==="
 hdfs dfs -mkdir -p /empresa/logistica/input
 
 echo "=== 2. Subiendo el archivo saneado a HDFS ==="
-hdfs dfs -put /workspace/telemetria_limpia.csv /empresa/logistica/input/
+hdfs dfs -put -f /workspace/telemetria_limpia.csv /empresa/logistica/input/
 
 echo "=== 3. Listando el directorio distribuido ==="
 hdfs dfs -ls /empresa/logistica/input/

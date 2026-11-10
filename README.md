@@ -1,7 +1,7 @@
 # Práctica Formativa Integradora Consolidación de Almacenamiento, Integridad del Dato y Toma de Contacto con HDFS
 
 
-**Asignatura / Módulos:** Calidad del Dato (Módulo 5075) & Infraestructura HDFS en Hadoop (Módulo 5074)  
+**Asignatura:** Big Data Aplicada 
 **Autor:** Antonio Luis Vela García  
 **Entorno de Ejecución:** Python 3.x (Pandas) / Apache Hadoop 3.4.0 (Docker Monocontenedor)
 
@@ -31,7 +31,7 @@
 
 ---
 
-## 🔹 Sección 1: Integridad y Calidad del Dato (Módulo 5075)
+## 🔹 Sección 1: Integridad (Módulo 5075)
 
 El aseguramiento de la calidad del dato en origen es un requisito previo indispensable para cualquier canalización de minería de datos o modelado analítico (KDD). En esta fase se ha validado la firma criptográfica **SHA-256** del conjunto de datos original y se ha desarrollado un proceso de saneamiento en Python con la librería `pandas`.
 
@@ -53,7 +53,7 @@ El dataset original presentaba anomalías deliberadas que distorsionaban la cali
 
 ---
 
-## 🔹 Sección 2: Despliegue de Infraestructura e Ingesta en HDFS (Módulo 5074)
+## 🔹 Sección 2: Despliegue y HDFS (Módulo 5074)
 
 El entorno de almacenamiento distribuido se ha desplegado utilizando Docker Compose sobre la imagen oficial de **Apache Hadoop 3.4.0** (`hadoop-lab`).
 
@@ -91,9 +91,23 @@ hdfs dfs -head /empresa/logistica/input/telemetria_limpia.csv
 hdfs fsck /empresa/logistica/input/telemetria_limpia.csv -files -blocks -locations
 ```
 
+### 2.3.1 Despliegue e Ingesta desde Windows PowerShell
+
+Para garantizar la reproducibilidad completa de la práctica en un entorno host Windows, se emplean los siguientes comandos CLI:
+
+```powershell
+# 1. Comprobación directa de integridad SHA-256 en la anfitriona
+(Get-FileHash -Algorithm SHA256 .\datos\telemetria_envios.csv).Hash -eq "4471c18a0284b3aa5b32a0713e691e3c7fcadae402f105e901c7c57f49474911"
+
+# 2. Normalización de saltos de línea (Windows CRLF a Unix LF) en scripts Shell
+(Get-Content ./scripts/ingesta_hdfs.sh -Raw) -replace "`r`n", "`n" | Set-Content -NoNewline ./scripts/ingesta_hdfs.sh
+
+# 3. Ejecución del script de ingesta HDFS desde PowerShell saneando caracteres '\r' en vuelo
+Get-Content ./scripts/ingesta_hdfs.sh -Raw | docker exec -i hadoop-lab bash -c "tr -d '\r' | bash"
+```
 ---
 
-## 🔹 Sección 3: Análisis Crítico de Tolerancia a Fallos en HDFS
+## 🔹 Sección 3: Análisis Crítico
 
 Un archivo almacenado en HDFS no se corrompe ni se pierde ante el fallo o apagado inopinado de un DataNode en un clúster empresarial debido al diseño de su **arquitectura de almacenamiento distribuido basada en la replicación de bloques físicos y el desacoplamiento de metadatos**. Cuando un cliente sube un archivo al sistema de archivos distribuido, el NameNode lo divide automáticamente en bloques continuos de tamaño fijo (128 MB por defecto en Hadoop 3.x). Cada bloque se distribuye de manera redundante entre los distintos DataNodes que componen el clúster, de acuerdo con el factor de replicación configurado (habitualmente `dfs.replication = 3` en entornos de producción).
 
