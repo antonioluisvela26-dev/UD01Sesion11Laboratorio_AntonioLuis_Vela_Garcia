@@ -46,8 +46,8 @@ El algoritmo SHA-256 genera una huella digital fija de 64 caracteres hexadecimal
 El dataset original presentaba anomalías deliberadas que distorsionaban la calidad analítica. Se aplicaron los siguientes filtros lógicos:
 1. **Deduplicación:** Eliminación de registros idénticos tomando como clave primaria compuesta los campos `id_envio` y `timestamp_lectura`.
 2. **Tratamiento de Nulos:** Filtrado de filas con valores ausentes (`NaN`) en variables operativas obligatorias (`peso_kg`, `temp_celsius`, `destino`).
-3. **Filtro de Inconsistencia de Peso:** Eliminación de lecturas anómalas con valores de masa nulos o negativos ($\text{peso\_kg} > 0$).
-4. **Filtro Rango Temperatura Refrigerada:** Filtrado de lecturas fuera del rango operativo real de camiones frigoríficos ($-30.0^\circ\text{C} \le \text{temp\_celsius} \le 30.0^\circ\text{C}$).
+3. **Filtro de Inconsistencia de Peso:** Eliminación de lecturas anómalas con valores de masa nulos o negativos (`peso_kg` > 0).
+4. **Filtro Rango Temperatura Refrigerada:** Filtrado de lecturas fuera del rango operativo real de camiones frigoríficos (-30.0 <= `temp_celsius` <= 30.0).
 5. **Validación de Dominio:** Restricción del campo `estado_envio` al catálogo oficial validado (`ENTREGADO`, `EN_TRANSITO`, `EN_REPARTO`, `PENDIENTE`).
 
 ---
